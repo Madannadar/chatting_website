@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Logo from '../assets/logo.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
@@ -24,6 +24,12 @@ const Register = () => {
     draggable: true,
     progress: undefined,
   }
+
+  useEffect(() => {
+    if (localStorage.getItem('chat-app')) {
+      navigate('/chat');
+    }
+  })
 
   const handelSubmit = async (e) => {
     e.preventDefault();

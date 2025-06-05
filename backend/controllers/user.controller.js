@@ -29,4 +29,38 @@ export const register = async (req, res, next) => {
 
 }
 
-export const login = async (req, res) => { }
+export const login = async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.json({ msg: "Incorrect username or password", status: false });
+        }
+        const ispasswordValid = await bcrypt.compare(password, user.password);
+        if (!ispasswordValid) {
+            return res.json({ msg: "Incorrect username or password", status: false });
+        }
+        console.log("User found:", user); 
+        delete user.password; // Remove password from the response
+        return res.json({ status: true, user });
+    } catch (error) {
+        next(error);
+        return res.status(500).json({ msg: "Internal server error", status: false });
+    }
+}
+
+export const setAvatar = async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const avatarImage = req.body.image;
+        const userData = await User.findByIdAndUpdate(userId, {
+            isAvatarImageSet: true,
+            avatarImage,
+        });
+        return res.json({isSet:userData.isAvatarImageSet, image:userData.avatarImage})
+    } catch (error) {
+        next(error);
+        return res.status(500).json({ msg: "Internal server error", status: false });
+    }
+}
+
