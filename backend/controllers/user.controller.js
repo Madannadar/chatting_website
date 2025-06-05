@@ -19,7 +19,7 @@ export const register = async (req, res, next) => {
             username,
             password: hashedPassword,
         });
-        console.log("User created:", user); 
+        console.log("User created:", user);
         delete user.password; // Remove password from the response
         return res.json({ status: true, user });
     } catch (error) {
@@ -40,7 +40,7 @@ export const login = async (req, res, next) => {
         if (!ispasswordValid) {
             return res.json({ msg: "Incorrect username or password", status: false });
         }
-        console.log("User found:", user); 
+        console.log("User found:", user);
         delete user.password; // Remove password from the response
         return res.json({ status: true, user });
     } catch (error) {
@@ -57,10 +57,26 @@ export const setAvatar = async (req, res, next) => {
             isAvatarImageSet: true,
             avatarImage,
         });
-        return res.json({isSet:userData.isAvatarImageSet, image:userData.avatarImage})
+        return res.json({ isSet: userData.isAvatarImageSet, image: userData.avatarImage })
     } catch (error) {
         next(error);
         return res.status(500).json({ msg: "Internal server error", status: false });
     }
 }
 
+export const getAllUser = async (req, res, next) => {
+    try {
+        // select all user excluding our user
+        const user = await User.find({ _id: { $ne: req.params.id } }).select([
+            "email",
+            "username",
+            "avatarImage",
+            "_id",
+        ]);
+        return res.json(user);
+    } catch (error) {
+        next(error)
+        return res.status(500).json({ msg: "internal server error", status: false })
+    }
+
+}
