@@ -15,7 +15,7 @@ export default function Contacts({ contacts, changeChat }) {
             setCurrentUserName(data.username);
             setCurrentUserImage(data.avatarImage);
         }
-        setNameAndImage();
+        setNameAndImage ();
     }, []);
 
 
