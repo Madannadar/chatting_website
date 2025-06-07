@@ -4,11 +4,13 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { allUsersRoute } from '../utils/APIRoutes';
 import Contacts from '../components/Contacts';
+import Welcome from '../components/Welcome';
 
 function Chat() {
   const navigate = useNavigate();
   const [contacts, setContacts] = useState([]);
   const [currentUser, setCurrentUser] = useState(undefined);
+  // const [currentUser1, setCurrentUser1] = useState(undefined);
   const [currentChat, setCurrentChat] = useState(undefined);
   // useEffect(async () => {
   //   if (!localStorage.getItem("chat-app")) {
@@ -33,18 +35,28 @@ function Chat() {
   // a cleanup function (e.g. for unsubscribing)
   // But async functions always return a Promise, which causes issues with  React's cleanup mechanism (destroy is not a function is part of that).
 
-// Fix
-// Wrap the async logic inside the useEffect with an inner async function instead:
+  // Fix
+  // Wrap the async logic inside the useEffect with an inner async function instead:
   useEffect(() => {
     const fetchUser = async () => {
       if (!localStorage.getItem("chat-app")) {
         navigate('/login');
       } else {
-        setCurrentUser(JSON.parse(localStorage.getItem('chat-app')));
+        // console.log("data in chat.jsx",JSON.parse(localStorage.getItem('chat-app')));
+        setCurrentUser(JSON.parse(localStorage.getItem('chat-app'))); // working 
       }
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if( currentUser )
+      // setCurrentUser1 = JSON.parse(localStorage.getItem('chat-app'));
+    console.log("currentUser", currentUser);
+
+    // if (currentUser)
+    // workingUser = currentUser;
+  }, [currentUser])
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -68,6 +80,7 @@ function Chat() {
       <Container>
         <div className='container'>
           <Contacts contacts={contacts} currentUser={currentUser} changeChat={handelChatChange} />
+          <Welcome currentUser={currentUser} />
         </div>
       </Container>
     </>

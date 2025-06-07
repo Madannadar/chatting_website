@@ -1,73 +1,85 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.svg";
 
 export default function Contacts({ contacts, changeChat }) {
-    const [currentUserName, setCurrentUserName] = useState(undefined);
-    const [currentUserImage, setCurrentUserImage] = useState(undefined);
-    const [currentSelected, setCurrentSelected] = useState(undefined);
+  const [currentUserName, setCurrentUserName] = useState(undefined);
+  const [currentUserImage, setCurrentUserImage] = useState(undefined);
+  const [currentSelected, setCurrentSelected] = useState(undefined);
 
-    useEffect(() => {
-        const setNameAndImage = async () => {
-            const data = await JSON.parse(
-                localStorage.getItem("chat-app")
-            );
-            setCurrentUserName(data.username);
-            setCurrentUserImage(data.avatarImage);
-        }
-        setNameAndImage ();
-    }, []);
+  useEffect(() => {
+    const setNameAndImage = async () => {
+      const data = await JSON.parse(localStorage.getItem("chat-app"));
+      // console.log("data", data);
+      setCurrentUserName(data.username)
+      setCurrentUserImage(data.avatarImage);
+      // console.log("Updated name:", currentUserName);
+      // currentUserName undefined
+      // console.log("Updated image:", currentUserImage);  
+      // currentUserImage undefined
 
+      // because React state updates are asynchronous — the values won't be updated immediately.
+    }
+    setNameAndImage();
+  }, []);
+  // here it will work the value will come perfectly 
+  // useEffect(() => {
+  //   if (currentUserName || currentUserImage) {
+  //     console.log("Updated name:", currentUserName);
+  //     console.log("Updated image:", currentUserImage);
+  //   }
+  // }, [currentUserName, currentUserImage]);
 
-    const changeCurrentChat = (index, contact) => {
-        setCurrentSelected(index);
-        changeChat(contact);
-    };
-    return (
-        <>
-            {currentUserImage && currentUserImage && (
-                <Container>
-                    <div className="brand">
-                        <img src={Logo} alt="logo" />
-                        <h3>snappy</h3>
-                    </div>
-                    <div className="contacts">
-                        {contacts.map((contact, index) => {
-                            return (
-                                <div
-                                    key={contact._id}
-                                    className={`contact ${index === currentSelected ? "selected" : ""
-                                        }`}
-                                    onClick={() => changeCurrentChat(index, contact)}
-                                >
-                                    <div className="avatar">
-                                        <img
-                                            src={`data:image/svg+xml;base64,${contact.avatarImage}`}
-                                            alt=""
-                                        />
-                                    </div>
-                                    <div className="username">
-                                        <h3>{contact.username}</h3>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className="current-user">
-                        <div className="avatar">
-                            <img
-                                src={`data:image/svg+xml;base64,${currentUserImage}`}
-                                alt="avatar"
-                            />
-                        </div>
-                        <div className="username">
-                            <h2>{currentUserName}</h2>
-                        </div>
-                    </div>
-                </Container>
-            )}
-        </>
-    );
+  const changeCurrentChat = (index, contact) => {
+    setCurrentSelected(index);
+    // console.log(index); 
+    changeChat(contact);
+  };
+  return (
+    <>
+      {currentUserImage && currentUserImage && (
+        <Container>
+          <div className="brand">
+            <img src={Logo} alt="logo" />
+            <h3>snappy</h3>
+          </div>
+          <div className="contacts">
+            {contacts.map((contact, index) => {
+              return (
+                <div
+                  key={contact._id}
+                  className={`contact ${index === currentSelected ? "selected" : ""
+                    }`}
+                  onClick={() => changeCurrentChat(index, contact)}
+                >
+                  <div className="avatar">
+                    <img
+                      src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                      alt=""
+                    />
+                  </div>
+                  <div className="username">
+                    <h3>{contact.username}</h3>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="current-user">
+            <div className="avatar">
+              <img
+                src={`data:image/svg+xml;base64,${currentUserImage}`}
+                alt="avatar"
+              />
+            </div>
+            <div className="username">
+              <h2>{currentUserName}</h2>
+            </div>
+          </div>
+        </Container>
+      )}
+    </>
+  );
 }
 const Container = styled.div`
   display: grid;
