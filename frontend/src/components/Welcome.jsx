@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import Robot from "../assets/robot.gif"
+import Logout from "./Logout";
 
 const Welcome = ({ currentUser }) => {
   if (!currentUser) {
@@ -12,6 +13,7 @@ const Welcome = ({ currentUser }) => {
 
   return (
     <Container>
+      < Logout  />
       <img src={Robot} alt="Robot" />
       <h1>Welcome, <span>{currentUser.username}!</span></h1>
       <h2>Please select a chat to start messaging</h2>

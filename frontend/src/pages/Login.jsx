@@ -80,7 +80,7 @@ const Login = () => {
 
   const handelChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
-    console.log(values);
+    // console.log(values);
   }
 
   return (
