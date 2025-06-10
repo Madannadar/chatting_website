@@ -1,33 +1,87 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Logout from './Logout'
 import ChatInput from './ChatInput'
 import Messages from './Messages'
+import axios from 'axios';
+import { getAllMessagesRoute, sendMessageRoute } from '../utils/APIRoutes.js'
 
+const ChatContainer = ({ currentChat, currentUser }) => {
 
-const ChatContainer = ({ currentChat }) => {
+  const [messages, setMessages] = useState([])
 
-    const handelSendMsg = async (msg) => {
+  // useEffect(async () => {
+  //   const response = await axios.post(getAllMessagesRoute, {
+  //     from: currentUser._id,
+  //     to: currentChat._id,
+  //   })
+  //   setMessages(response.data);
+  // }, [currentChat])
 
+ useEffect(() => {
+  const getAllMessages = async () => {
+    try {
+      const response = await axios.get(getAllMessagesRoute, {
+        params: {
+          from: currentUser._id,
+          to: currentChat._id,
+        },
+      });
+      setMessages(response.data);
+    } catch (error) {
+      console.error("Failed to fetch messages:", error);
     }
+  };
 
-    return (
-        <Container>
-            <div className="chat-header">
-                <div className="user-details">
-                    <div className="avatar">
-                        <img src={`data:image/svg+xml;base64,${currentChat.avatarImage}`} alt="" />
-                    </div>
-                    <div className="username">
-                        <h3>{currentChat.username}</h3>
-                    </div>
+  if (currentChat) {
+    getAllMessages();
+  }
+}, [currentChat]);
+
+
+  const handelSendMsg = async (msg) => {
+    // alert(msg)
+    await axios.post(sendMessageRoute, {
+      from: currentUser._id,
+      to: currentChat._id,
+      message: msg,
+    })
+  }
+
+  return (
+    <Container>
+      <div className="chat-header">
+        <div className="user-details">
+          <div className="avatar">
+            <img src={`data:image/svg+xml;base64,${currentChat.avatarImage}`} alt="" />
+          </div>
+          <div className="username">
+            <h3>{currentChat.username}</h3>
+          </div>
+        </div>
+        <Logout />
+      </div>
+      <div className="chat-messages">
+        {
+          messages.map((messages) => {
+            return (
+              <div>
+                <div className={`message ${messages.fromSelf ? 'sended' : 'recivied'}`}>
+                  <div className="content">
+                    <p>
+                      {messages.message}
+                    </p>
+                  </div>
                 </div>
-                <Logout />
-            </div>
-            <Messages />
-            <ChatInput handelSendMsg={handelSendMsg}/>
-        </Container>
-    )
+              </div>
+            )
+          })
+        }
+      </div>
+      {/* <Messages /> */}
+      <ChatInput handelSendMsg={handelSendMsg} />
+    </Container>
+  )
 }
 
 export default ChatContainer
