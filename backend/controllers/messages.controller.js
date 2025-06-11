@@ -8,7 +8,7 @@ export const addMessage = async (req, res, next) => {
             users: [from, to],
             sender: from,
         })
-        console.log("message",data.message.text);
+        // console.log("message",data.message.text);
         if (data) return res.json({ msg: "Message added successfully" })
         if (!data) return res.json({ msg: "Failded to added message to db" })
     } catch (error) {
@@ -20,15 +20,16 @@ export const getAllMessages = async (req, res, next) => {
     try {
         const { from, to } = req.query;
         const messages = await Messages.find({
-            user: {
+            users: {
                 $all: [from, to],
             },
         }).sort({ updatedAt: 1 })
-        console.log(messages);
+        // console.log(messages);
         
         const projectedMessages = messages.map((msg) => {
             return {
-                fromself:msg.sender.toString() === from,
+                _id: msg._id,
+                fromSelf:msg.sender.toString() === from,
                 message:msg.message.text,
             }
         })
